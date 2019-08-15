@@ -1,6 +1,18 @@
-sudo: required
-
+language: php
 dist: xenial
+sudo: true
+
+git:
+  depth: 5
+
+notifications:
+  email:
+    - lisa@codementality.com
+  on_success: change
+  on_failure: always
+
+php:
+  - 7.3
 
 services:
   - docker
@@ -28,10 +40,17 @@ before_install:
   - ./awscli-bundle/install -b ~/bin/aws
   - export PATH=~/bin:$PATH
   - mkdir -p ~/shared
+  - echo 'sendmail_path = /bin/true' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - phpenv config-rm xdebug.ini
+  - composer --verbose self-update --$COMPOSER_CHANNEL
+  - composer --version
 
 before_script:
-  - sudo rm docker/php/conf.d/xdebug.ini
-  - cp .env.example .env
+  - composer create-project codementality/drupal-project:8.x-dev drupal --no-interaction
+  - sudo rm drupal/docker/php/conf.d/xdebug.ini
+  - cp drupal/.env.example drupal/.env
+  - cp drupal/drupal/settings.php drupal/docroot/sites/default/settings.php
+  - cd drupal
   - make devinit
   - make cache-reset
 
