@@ -17,6 +17,11 @@ php:
 services:
   - docker
 
+# Build only when changes are pushed on travis-tests branch
+branches:
+  only:
+  - travis-tests
+
 git:
   depth: 5
 
