@@ -20,12 +20,6 @@ services:
 git:
   depth: 5
 
-notifications:
-  email:
-    - lisa@codementality.com
-  on_success: change
-  on_failure: always
-
 addons:
   hosts:
     - drupal.test
