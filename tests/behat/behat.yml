@@ -1,0 +1,58 @@
+default:
+  suites:
+#    default:
+#      contexts:
+#        - Drupal\DrupalExtension\Context\DrupalContext
+#        - Drupal\DrupalExtension\Context\MinkContext
+#        - Drupal\DrupalExtension\Context\MessageContext
+#        - Drupal\DrupalExtension\Context\DrushContext
+    general:
+      filter:
+      paths:
+        - "%paths.base%/features/general"
+      contexts:
+        - Drupal\DrupalExtension\Context\MinkContext
+        - Drupal\DrupalExtension\Context\DrupalContext
+  extensions:
+    Behat\MinkExtension:
+      goutte:
+        guzzle_parameters:
+          verify: false
+          config:
+            curl:
+              CURLOPT_TIMEOUT: 300
+              CURLOPT_CONNECTTIMEOUT: 0
+      javascript_session: selenium2
+      selenium2:
+        wd_host: http://selenium:4444/wd/hub
+        browser: chrome
+        capabilities:
+          marionette: true
+      base_url: 'https://drupal.test'
+    Drupal\DrupalExtension:
+      blackbox: ~
+      region_map:
+        form error message: '.form-item--error-message'
+        taxonomy: '.taxonomy-overview-vocabularies'
+        taxonomy_terms: '.taxonomy-overview-terms'
+        content: '.region-content' 
+        admin page header: '#block-seven-page-title'
+        admin page help: '.page-content .help .region-help'
+        admin page content: '#block-seven-content'
+        admin local primary tasks: '#block-seven-primary-local-tasks'
+        admin local secondary tasks: '#block-seven-secondary-local-tasks'
+        left sidebar: ".layout-sidebar-1"
+      selectors:
+        message_selector: '.messages'
+        error_message_selector: '.messages--error'
+        success_message_selector: '.messages--status'
+      api_driver: 'drupal'
+      drupal:
+        drupal_root: '/var/www/html/docroot'
+      drush:
+        alias: '@drupal.local'
+    FailAid\Extension:
+      screenshot:
+        directory: "%paths.base%/screenshots/"
+        mode: default
+        autoClean: false

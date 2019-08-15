@@ -1,0 +1,44 @@
+sudo: required
+
+dist: xenial
+
+services:
+  - docker
+
+git:
+  depth: 5
+
+notifications:
+  email:
+    - lisa@codementality.com
+  on_success: change
+  on_failure: always
+
+addons:
+  hosts:
+    - drupal.test
+    - solr.drupal.test
+
+before_install:
+  - export PATH=$PATH:$HOME/.local/bin
+  - sudo apt-get -qq update
+  - sudo apt-get install -y pv
+  - curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+  - unzip awscli-bundle.zip
+  - ./awscli-bundle/install -b ~/bin/aws
+  - export PATH=~/bin:$PATH
+  - mkdir -p ~/shared
+
+before_script:
+  - sudo rm docker/php/conf.d/xdebug.ini
+  - cp .env.example .env
+  - make devinit
+  - make cache-reset
+
+script:
+  - make phpcs
+#  - make fetest
+#  - make phpunit
+  - make scan-custom-deprecated
+  - make behat
+  - make wcag2AA
