@@ -40,7 +40,7 @@ before_install:
   - composer --version
 
 before_script:
-  - composer create-project codementality/drupal-project:8.x-dev drupal --no-interaction
+  - COMPOSER_MEMORY_LIMIT=-1 composer create-project codementality/drupal-project:8.x-dev drupal --no-interaction
   - sudo rm drupal/docker/php/conf.d/xdebug.ini
   - cp drupal/.env.example drupal/.env
   - cp drupal/drupal/settings.php drupal/docroot/sites/default/settings.php
